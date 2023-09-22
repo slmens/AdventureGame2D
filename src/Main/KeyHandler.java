@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 import java.security.Key;
 
 public class KeyHandler implements KeyListener {
-    public boolean upPressed,downPressed,rightPressed,leftPressed,upperRightCross,upperLeftCross,downRightCross,downLeftCross;
+    public boolean upPressed,downPressed,rightPressed,leftPressed;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -13,13 +13,10 @@ public class KeyHandler implements KeyListener {
     }
 
     @Override
-    public void keyPressed(KeyEvent e,KeyEvent d) {
+    public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-        int code2 = d.getKeyCode();
 
-        if (code == KeyEvent.VK_W && code2 == KeyEvent.VK_D){
-            upperRightCross = true;
-        } else if (code == KeyEvent.VK_W){
+        if (code == KeyEvent.VK_W){
             upPressed = true;
         }
 
@@ -37,13 +34,10 @@ public class KeyHandler implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e,KeyEvent d) {
+    public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
-        int code2 = d.getKeyCode();
 
-        if (code == KeyEvent.VK_W && code2 == KeyEvent.VK_D){
-            upperRightCross = false;
-        } else if (code == KeyEvent.VK_W){
+        if (code == KeyEvent.VK_W){
             upPressed = false;
         }
 

@@ -1,18 +1,19 @@
 package Main;
 
 import Entity.Player;
+import Tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    final int originalTileSize = 32; // 16x16 tile
-    final int scale = 2;
+    final int originalTileSize = 16; // 16 tile
+    final int scale = 3; // 16x3
 
     public final int tileSize = originalTileSize * scale;
-    final int maxScreenColumn = 24;
-    final int maxScreenRow = 18;
+    public final int maxScreenColumn = 24;
+    public final int maxScreenRow = 18;
     final int screenWidth = tileSize * maxScreenColumn;
     final int screenHeigth = tileSize * maxScreenRow;
     int FPS = 60;
@@ -20,8 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler kH = new KeyHandler();
     Thread gameThread;
     Player player = new Player(this,kH);
-
-    int playerX = 100,playerY = 100,playerSpeed = 4;
+    TileManager tileM = new TileManager(this);
 
 
     public GamePanel(){
@@ -70,6 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D)g;
 
+        tileM.draw(g2);
         player.draw(g2);
 
         g2.dispose();

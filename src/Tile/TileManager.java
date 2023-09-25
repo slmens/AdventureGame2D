@@ -17,8 +17,8 @@ public class TileManager {
     public TileManager(GamePanel gp){
         this.gp = gp;
 
-        tile = new Tile[13];
-        mapTileNum = new int[gp.maxScreenRow][gp.maxScreenColumn];
+        tile = new Tile[17];
+        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
         loadMap("/maps/mapMain.txt");
@@ -34,9 +34,11 @@ public class TileManager {
 
             tile[2] = new Tile();
             tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/019.png"));
+            tile[2].collision = true;
 
             tile[3] = new Tile();
             tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water00.png"));
+            tile[3].collision = true;
 
             tile[4] = new Tile();
             tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/road00.png"));
@@ -65,6 +67,18 @@ public class TileManager {
             tile[12] = new Tile();
             tile[12].image = ImageIO.read(getClass().getResourceAsStream("/tiles/road03.png"));
 
+            tile[13] = new Tile();
+            tile[13].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sagNormalCimSuKenari.png"));
+
+            tile[14] = new Tile();
+            tile[14].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sagYapraklıCimSuKenari.png"));
+
+            tile[15] = new Tile();
+            tile[15].image = ImageIO.read(getClass().getResourceAsStream("/tiles/solNormalCimSuKenari.png"));
+
+            tile[16] = new Tile();
+            tile[16].image = ImageIO.read(getClass().getResourceAsStream("/tiles/solYapraklıCimSuKenari.png"));
+
 
 
         }catch (IOException e){
@@ -78,18 +92,17 @@ public class TileManager {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             int col = 0,row = 0;
-            while (col < gp.maxScreenColumn && row < gp.maxScreenRow){
+            while (col < gp.maxWorldCol && row < gp.maxWorldRow){
                 String line = br.readLine();
 
-                while (col < gp.maxScreenColumn){
+                while (col < gp.maxWorldCol){
                     String[] numbers = line.split(" ");
                     int num = Integer.parseInt(numbers[col]);
-                    System.out.println(num);
 
                     mapTileNum[row][col] = num;
                     col++;
                 }
-                if (col == gp.maxScreenColumn){
+                if (col == gp.maxWorldCol){
                     col = 0;
                     row++;
                 }
@@ -104,20 +117,26 @@ public class TileManager {
 
     public void draw(Graphics2D g2){
 
-        int col = 0,row = 0,x = 0,y = 0;
+        int worldCol = 0,worldRow = 0;
 
-        while (col < gp.maxScreenColumn && row < gp.maxScreenRow){
-            int tileNum = mapTileNum[row][col];
+        while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow){
+            int tileNum = mapTileNum[worldRow][worldCol];
+            int worldX = worldCol * gp.tileSize;
+            int worldY = worldRow * gp.tileSize;
+            int screenX = worldX - gp.player.worldX + gp.player.screenX;
+            int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-            g2.drawImage(tile[tileNum].image,x,y,gp.tileSize,gp.tileSize,null);
-            col++;
-            x+= gp.tileSize;
+            if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && worldX -gp.tileSize < gp.player.worldX + gp.player.screenX && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY){
+                g2.drawImage(tile[tileNum].image,screenX,screenY,gp.tileSize,gp.tileSize,null);
+            }
 
-            if (col == gp.maxScreenColumn){
-                col = 0;
-                x = 0;
-                row++;
-                y+= gp.tileSize;
+
+            worldCol++;
+
+            if (worldCol == gp.maxWorldCol){
+                worldCol = 0;
+                worldRow++;
+
             }
         }
     }

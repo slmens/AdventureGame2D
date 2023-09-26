@@ -13,16 +13,16 @@ public class Player extends Entity{
 
     GamePanel gP;
     KeyHandler kH;
-    public final int screenX,screenY;
+    public final float screenX,screenY;
 
     public Player(GamePanel gP, KeyHandler kH) {
         this.gP = gP;
         this.kH = kH;
 
-        screenX = gP.screenWidth / 2 - (gP.tileSize/2);
-        screenY = gP.screenHeigth / 2 - (gP.tileSize/2);
+        screenX = (float) gP.screenWidth / 2 - ((float) gP.tileSize /2);
+        screenY = (float) gP.screenHeight / 2 - ((float) gP.tileSize /2);
 
-        solidArea = new Rectangle(8,16,32,32);
+        solidArea = new Rectangle((int) screenX, (int) screenY,25,25);
 
         setDefaultValues();
         getPlayerImage();
@@ -30,7 +30,7 @@ public class Player extends Entity{
 
     public void setDefaultValues(){
         worldX = gP.tileSize * 32;
-        worldY = gP.tileSize * 30;
+        worldY = gP.tileSize * 40;
         speed = 4;
         direction = "down";
         lastDirection = "down";
@@ -67,20 +67,35 @@ public class Player extends Entity{
             if (kH.upPressed){
                 direction = "up";
                 lastDirection = "up";
-                worldY -= speed;
+
             } else if (kH.downPressed) {
                 direction = "down";
                 lastDirection = "down";
-                worldY += speed;
+
             }
             else if (kH.leftPressed) {
                 direction = "left";
                 lastDirection = "left";
-                worldX -= speed;
-            } else if (kH.rightPressed) {
+
+            } else {
                 direction = "right";
                 lastDirection = "right";
-                worldX += speed;
+
+            }
+
+            //Check tile collision
+            this.collisionOn = false;
+            gP.cChecker.canMoveHere(this,worldX,worldY, gP.tileSize,gP.tileSize);
+
+            //If collision is false, player can move otherwise player can't move
+            System.out.println(collisionOn);
+            if (!collisionOn){
+                switch (direction) {
+                    case "up" -> worldY -= speed;
+                    case "down" -> worldY += speed;
+                    case "left" -> worldX -= speed;
+                    case "right" -> worldX += speed;
+                }
             }
 
             spriteCounter++;
@@ -104,46 +119,48 @@ public class Player extends Entity{
     public void draw(Graphics2D g2){
         BufferedImage image = null;
 
-        switch (direction){
-            case "up":
-                if (spriteNum == 1){
+        switch (direction) {
+            case "up" -> {
+                if (spriteNum == 1) {
                     image = up1;
                 } else if (spriteNum == 2) {
                     image = up2;
                 } else if (Objects.equals(lastDirection, "up") && spriteNum == 3) {
                     image = up3;
                 }
-                break;
-            case "down":
-                if (spriteNum == 1){
+            }
+            case "down" -> {
+                if (spriteNum == 1) {
                     image = down1;
                 } else if (spriteNum == 2) {
                     image = down2;
-                }else if (Objects.equals(lastDirection, "down") && spriteNum == 3) {
+                } else if (Objects.equals(lastDirection, "down") && spriteNum == 3) {
                     image = down3;
                 }
-                break;
-            case "right":
-                if (spriteNum == 1){
+            }
+            case "right" -> {
+                if (spriteNum == 1) {
                     image = right1;
                 } else if (spriteNum == 2) {
                     image = right2;
-                }else if (Objects.equals(lastDirection, "right") && spriteNum == 3) {
+                } else if (Objects.equals(lastDirection, "right") && spriteNum == 3) {
                     image = right3;
                 }
-                break;
-            case "left":
-                if (spriteNum == 1){
+            }
+            case "left" -> {
+                if (spriteNum == 1) {
                     image = left1;
-                }else if (spriteNum == 2) {
+                } else if (spriteNum == 2) {
                     image = left2;
-                }else if (Objects.equals(lastDirection, "left") && spriteNum == 3) {
+                } else if (Objects.equals(lastDirection, "left") && spriteNum == 3) {
                     image = left3;
                 }
-                break;
+            }
         }
 
-        g2.drawImage(image,screenX,screenY, gP.tileSize,gP.tileSize,null);
+        g2.drawImage(image,(int) screenX, (int) screenY, gP.tileSize,gP.tileSize,null);
+        g2.setColor(Color.red);
+        g2.draw(solidArea);
     }
 
 
